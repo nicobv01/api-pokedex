@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using PokeDek.API.Helpers;
 using PokeDek.API.Models;
 using PokeDek.API.Services;
 using System.Security.Cryptography.X509Certificates;
@@ -11,9 +12,32 @@ namespace PokeDek.API.Controllers
     {
         // GET: api/Pokemons
         [HttpGet]
-        public IEnumerable<Pokemon> GetPokemons()
+        public IEnumerable<Pokemon> GetPokemons([FromQuery]string? searchString, string? sortBy, int? pageIndex)
         {
-            return PokemonsMockDatabase.GetPokemons();
+            //If we were pointing to a DB using EF this should be an IQueryable
+            var pokemonsQueryResult = PokemonsMockDatabase.GetPokemons().AsQueryable();
+            //Searching (non case-sensitive)
+            if (!String.IsNullOrEmpty(searchString))
+            {
+                pokemonsQueryResult = pokemonsQueryResult.Where(s => s.Name.Contains(searchString, StringComparison.InvariantCultureIgnoreCase)
+                                    || s.Code.Contains(searchString, StringComparison.InvariantCultureIgnoreCase));
+            }
+
+            //Sorting
+            pokemonsQueryResult = sortBy switch
+            {
+                "name" => pokemonsQueryResult.OrderBy(s => s.Name),
+                "name_desc" => pokemonsQueryResult.OrderByDescending(s => s.Name),
+                "code" => pokemonsQueryResult.OrderBy(s => s.Code),
+                "code_desc" => pokemonsQueryResult.OrderByDescending(s => s.Code),
+                _ => pokemonsQueryResult.OrderBy(s => s.Code),
+            };
+
+            //Paging
+            int pageSize = 10;
+            var paginatedResult = PaginatedList<Pokemon>.Create(
+                pokemonsQueryResult, pageIndex ?? 1, pageSize);
+            return paginatedResult;
         }
 
         // GET: api/Pokemons/5
