@@ -9,6 +9,27 @@ namespace PokeDek.API.Services
             return pokemonsDB;
         }
 
+        public static Pokemon CreatePokemon(Pokemon pokemon)
+        {
+            pokemonsDB.Add(pokemon);
+            return pokemon;
+        }
+
+        public static void UpdatePokemon(Pokemon pokemon)
+        {
+            pokemonsDB[pokemonsDB.FindIndex(p => p.Code == pokemon.Code)] = pokemon;
+        }
+
+        public static void Remove(Pokemon pokemon)
+        {
+            pokemonsDB.Remove(pokemon);
+        }
+
+        public static bool PokemonExists(string code)
+        {
+            return pokemonsDB.Any(p => p.Code == code);
+        }
+
         private static List<Pokemon> pokemonsDB = new List<Pokemon> {
                 new Pokemon { Code = "001", ImageUrl = "https://www.serebii.net/pokemongo/pokemon/001.png", Name = "Bulbasaur", Type1 = "Grass", Type2 = "Poison"},
                 new Pokemon { Code = "002", ImageUrl = "https://www.serebii.net/pokemongo/pokemon/002.png", Name = "Ivysaur", Type1 = "Grass", Type2 = "Poison"},
