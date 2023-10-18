@@ -47,5 +47,33 @@ namespace PokeDek.API.Controllers
             return CreatedAtAction("GetPokemon", new { id = pokemon.Code }, pokemon);
         }
 
+        // PUT: api/Pokemons/5
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status409Conflict)]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        public IActionResult PutPokemon([FromRoute] string id, [FromBody] Pokemon pokemon)
+        {
+            if (!ModelState.IsValid)
+            {
+                return Conflict(ModelState);
+            }
+
+            if (id != pokemon.Code)
+            {
+                return BadRequest();
+            }
+
+            if (!PokemonsMockDatabase.PokemonExists(pokemon.Code))
+            {
+                return NotFound();
+            }
+
+            PokemonsMockDatabase.UpdatePokemon(pokemon);
+
+            return NoContent();
+        }
+
     }
 }
