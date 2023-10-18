@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PokeDek.API.Helpers;
 using PokeDek.API.Models;
 using PokeDek.API.Services;
@@ -7,6 +8,7 @@ using System.Security.Cryptography.X509Certificates;
 namespace PokeDek.API.Controllers
 {
     [ApiController]
+    [Authorize]
     [Route("api/[controller]")]
     public class PokemonsController : ControllerBase
     {
