@@ -15,5 +15,20 @@ namespace PokeDek.API.Controllers
         {
             return PokemonsMockDatabase.GetPokemons();
         }
+
+        // GET: api/Pokemons/5
+        [HttpGet("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Pokemon))]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult GetPokemon([FromRoute] string id)
+        {
+   
+            var pokemon = PokemonsMockDatabase.GetPokemons()
+                                              .FirstOrDefault(p => p.Code == id);
+
+            return pokemon == null? NotFound() : Ok(pokemon);
+
+        }
+
     }
 }
