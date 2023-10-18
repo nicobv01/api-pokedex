@@ -75,5 +75,31 @@ namespace PokeDek.API.Controllers
             return NoContent();
         }
 
+        // DELETE: api/Pokemons/5
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status200OK, Type = typeof(Pokemon))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest)]
+        [ProducesResponseType(StatusCodes.Status404NotFound)]
+        public IActionResult DeletePokemon([FromRoute] string id)
+        {
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            if (!PokemonsMockDatabase.PokemonExists(id))
+            {
+                return NotFound();
+            }
+
+            var pokemon = PokemonsMockDatabase.GetPokemons()
+                                              .ToList()
+                                              .FirstOrDefault(p => p.Code == id);
+
+
+            PokemonsMockDatabase.Remove(pokemon);
+
+            return Ok(pokemon);
+        }
     }
 }
