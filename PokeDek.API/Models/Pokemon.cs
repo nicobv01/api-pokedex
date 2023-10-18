@@ -1,6 +1,6 @@
 ﻿namespace PokeDek.API.Models
 {
-    public class Pokemons
+    public class Pokemon
     {
         public string Code { get; set; }
         public string ImageUrl { get; set; }
