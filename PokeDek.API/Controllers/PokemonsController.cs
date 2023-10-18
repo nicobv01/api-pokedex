@@ -30,5 +30,22 @@ namespace PokeDek.API.Controllers
 
         }
 
+        // POST: api/Pokemons
+        [HttpPost]
+        [ProducesResponseType(StatusCodes.Status201Created, Type = typeof(Pokemon))]
+        [ProducesResponseType(StatusCodes.Status400BadRequest, Type = typeof(ErrorModelResponse))]
+        public IActionResult PostPokemon([FromBody] Pokemon pokemon)
+        {
+
+            if (!ModelState.IsValid)
+            {
+                return BadRequest(ModelState);
+            }
+
+            PokemonsMockDatabase.CreatePokemon(pokemon);
+
+            return CreatedAtAction("GetPokemon", new { id = pokemon.Code }, pokemon);
+        }
+
     }
 }
